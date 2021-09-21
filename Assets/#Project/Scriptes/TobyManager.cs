@@ -16,14 +16,16 @@ public class TobyManager : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.avoidancePriority = Random.Range(1, 100);
+        agent.speed = Random.Range(1f, 10f);
         NextDestination();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        if(agent.remainingDistance <= agent.stoppingDistance)
+
+        if (agent.remainingDistance <= agent.stoppingDistance)
         {
             NextDestination();
         }
@@ -31,11 +33,24 @@ public class TobyManager : MonoBehaviour
 
     private void NextDestination()
     {
+        indexNextDestination = Random.Range(0, targetPoints.Count);
+
         actualDestination = targetPoints[indexNextDestination].GivePoint();
         agent.SetDestination(actualDestination);
 
-        indexNextDestination++;
-        if (indexNextDestination >= targetPoints.Count) indexNextDestination = 0;
+        // indexNextDestination++;
+        // if (indexNextDestination >= targetPoints.Count) indexNextDestination = 0;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (agent != null)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(transform.position + Vector3.up * 2,
+            0.5f + (100 - agent.avoidancePriority) * 0.01f);
+
+        }
     }
 
 }
